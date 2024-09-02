@@ -1,4 +1,17 @@
-langtest-env/
-__pycache__/
-*.pyc
+# Environments
 .env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Other
+.DS_Store
+*.log
