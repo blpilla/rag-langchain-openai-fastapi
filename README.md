@@ -8,14 +8,8 @@ Este projeto implementa um sistema RAG capaz de processar documentos, convertê-
 
 ## Requisitos
 
-- Python 3.12.5
-- langchain 0.2.14
-- openai 0.27.2
-- faiss-cpu 1.8.0
-- fastapi 0.109.2
-- uvicorn 0.27.1
-- python-dotenv 1.0.0
-- pydantic 2.6.1
+- Python 3.12.5+
+- Dependências listadas em `requirements.txt`
 
 ## Instalação
 
@@ -49,7 +43,23 @@ Este projeto implementa um sistema RAG capaz de processar documentos, convertê-
    uvicorn main:app --reload
    ```
 
-2. Acesse a documentação da API em `http://localhost:8000/docs`
+2. Use curl para interagir com a API:
+
+   - Processar um documento:
+     ```bash
+     curl -X POST "http://localhost:8000/process_document" \
+          -H "Content-Type: application/json" \
+          -d '{"content": "O Python é uma linguagem de programação de alto nível, interpretada de script, imperativa, orientada a objetos, funcional, de tipagem dinâmica e forte. Foi lançada por Guido van Rossum em 1991."}'
+     ```
+
+   - Fazer uma consulta:
+     ```bash
+     curl -X POST "http://localhost:8000/query" \
+          -H "Content-Type: application/json" \
+          -d '{"question": "Quem criou a linguagem Python?"}'
+     ```
+
+3. Acesse a documentação da API em `http://localhost:8000/docs`
 
 ## Estrutura do Projeto
 
@@ -58,13 +68,11 @@ langchain-openai-fastapi/
 │
 ├── src/
 │   ├── document_processor.py
-│   ├── text_to_vector.py
 │   ├── vector_db.py
 │   └── rag_engine.py
 │
 ├── tests/
 │   ├── test_document_processor.py
-│   ├── test_text_to_vector.py
 │   ├── test_vector_db.py
 │   └── test_rag_engine.py
 │
@@ -74,6 +82,13 @@ langchain-openai-fastapi/
 ├── requirements.txt
 └── README.md
 ```
+
+## Componentes Principais
+
+- `document_processor.py`: Responsável por processar e segmentar documentos.
+- `vector_db.py`: Implementa o armazenamento e busca de vetores usando FAISS.
+- `rag_engine.py`: Coordena a recuperação de informações e geração de respostas usando LLM.
+- `main.py`: Implementa a API FastAPI para interagir com o sistema RAG.
 
 ## Características Principais
 

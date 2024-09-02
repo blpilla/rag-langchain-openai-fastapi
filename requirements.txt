@@ -1,7 +1,11 @@
-fastapi==0.112.2
-langchain==0.2.15
-openai==0.28.1
+fastapi
+langchain
+langchain-community
+langchain-openai
+openai
 faiss-cpu
-python-dotenv==1.0.0
-uvicorn==0.30.6
-pydantic==2.8.2 
+python-dotenv
+uvicorn
+pydantic
+pytest
+httpx
