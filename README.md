@@ -101,7 +101,7 @@ Para executar os testes do projeto, siga estas etapas:
 ## Estrutura do Projeto
 
 ```
-.
+
 ├── src/
 │   ├── document_processor.py
 │   ├── text_preprocessor.py
@@ -110,13 +110,19 @@ Para executar os testes do projeto, siga estas etapas:
 ├── tests/
 │   ├── test_document_processor.py
 │   ├── test_text_preprocessor.py
+│   ├── test_main.py
 │   ├── test_vector_db.py
 │   └── test_rag_engine.py
+├── persistent_vector_db/
+│   ├── index.faiss
+│   └── index.pkl
 ├── .env
 ├── .gitignore
 ├── main.py
 ├── requirements.txt
+├── ARCHITECTURE.md
 └── README.md
+
 ```
 
 ## Características Principais
