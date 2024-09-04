@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <style>
+    .component { fill: #f0f4f8; stroke: #3182ce; stroke-width: 2; }
+    .icon { fill: #3182ce; }
+    .arrow { fill: none; stroke: #4a5568; stroke-width: 2; }
+    text { font-family: Arial, sans-serif; fill: #2d3748; }
+    .title { font-size: 24px; font-weight: bold; }
+    .subtitle { font-size: 16px; font-style: italic; }
+    .label { font-size: 14px; }
+    .description { font-size: 11px; fill: #4a5568; }
+    .comment { font-size: 12px; fill: #718096; font-style: italic; }
+  </style>
+
+  <!-- Título e Subtítulo -->
+  <text x="400" y="40" text-anchor="middle" class="title">Sistema de Perguntas e Respostas Inteligente</text>
+  <text x="400" y="70" text-anchor="middle" class="subtitle">Como transformo seus documentos em respostas úteis</text>
+
+  <!-- Usuário -->
+  <circle cx="100" cy="150" r="40" class="component" />
+  <path d="M100,130 a1,1 0 0,0 0,40 v-40 m-15,55 a1,1 0 0,0 30,0" class="icon" />
+  <text x="100" y="210" text-anchor="middle" class="label">Você</text>
+  <text x="100" y="225" text-anchor="middle" class="comment">Faz perguntas</text>
+
+  <!-- Documentos -->
+  <rect x="50" y="270" width="100" height="60" rx="10" class="component" />
+  <path d="M70,290 h60 m-60,10 h50 m-50,10 h40" class="icon" />
+  <text x="100" y="350" text-anchor="middle" class="label">Seus Documentos</text>
+  <text x="100" y="365" text-anchor="middle" class="comment">Fonte de informações</text>
+
+  <!-- Processador de Documentos -->
+  <rect x="220" y="270" width="120" height="60" rx="10" class="component" />
+  <path d="M250,290 h60 m-60,10 h50 m-50,10 h40" class="icon" />
+  <text x="280" y="350" text-anchor="middle" class="label">Processador</text>
+  <text x="280" y="365" text-anchor="middle" class="comment">Prepara os dados</text>
+
+  <!-- Banco de Dados Vetorial -->
+  <rect x="400" y="270" width="120" height="60" rx="10" class="component" />
+  <path d="M420,290 h80 m-80,10 h80 m-80,10 h80" class="icon" />
+  <text x="460" y="350" text-anchor="middle" class="label">Banco de Dados</text>
+  <text x="460" y="365" text-anchor="middle" class="comment">Armazena informações</text>
+
+  <!-- API -->
+  <rect x="220" y="120" width="120" height="60" rx="10" class="component" />
+  <path d="M250,140 h60 M250,160 h60" class="icon" />
+  <text x="280" y="200" text-anchor="middle" class="label">API</text>
+  <text x="280" y="215" text-anchor="middle" class="comment">Recebe suas perguntas</text>
+
+  <!-- Motor RAG -->
+  <rect x="400" y="120" width="120" height="60" rx="10" class="component" />
+  <circle cx="460" cy="150" r="20" class="icon" />
+  <path d="M450,150 h20 M460,140 v20" class="icon" />
+  <text x="460" y="200" text-anchor="middle" class="label">Motor RAG</text>
+  <text x="460" y="215" text-anchor="middle" class="comment">Busca e combina dados</text>
+
+  <!-- Modelo de Linguagem -->
+  <rect x="580" y="120" width="140" height="60" rx="10" class="component" />
+  <path d="M630,135 l40,15 l-40,15" class="icon" />
+  <text x="650" y="200" text-anchor="middle" class="label">Modelo de Linguagem</text>
+  <text x="650" y="215" text-anchor="middle" class="comment">Gera respostas</text>
+
+  <!-- Setas -->
+  <path d="M140,150 H210" class="arrow" marker-end="url(#arrowhead)" />
+  <text x="175" y="140" class="description">Pergunta</text>
+  
+  <path d="M150,300 H210" class="arrow" marker-end="url(#arrowhead)" />
+  <text x="180" y="290" class="description">Alimenta</text>
+  
+  <path d="M340,300 H390" class="arrow" marker-end="url(#arrowhead)" />
+  <text x="365" y="290" class="description">Armazena</text>
+  
+  <path d="M280,180 V260" class="arrow" marker-end="url(#arrowhead)" />
+  
+  <path d="M340,150 H390" class="arrow" marker-end="url(#arrowhead)" />
+  
+  <path d="M520,150 H570" class="arrow" marker-end="url(#arrowhead)" />
+  
+  <path d="M650,110 V90 H280 V110" class="arrow" marker-start="url(#arrowhead)" />
+  <text x="460" y="85" class="description">Retorna resposta</text>
+
+  <!-- Marcador de seta -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568" />
+    </marker>
+  </defs>
+
+  <!-- Explicações -->
+  <text x="400" y="450" text-anchor="middle" font-weight="bold">Como funciona:</text>
+  <text x="400" y="475" text-anchor="middle" class="description">1. Você faz uma pergunta através da API.</text>
+  <text x="400" y="495" text-anchor="middle" class="description">2. O Motor RAG busca informações relevantes no Banco de Dados.</text>
+  <text x="400" y="515" text-anchor="middle" class="description">3. O Modelo de Linguagem gera uma resposta baseada nos dados encontrados.</text>
+  <text x="400" y="535" text-anchor="middle" class="description">4. A resposta é enviada de volta para você através da API.</text>
+</svg>
