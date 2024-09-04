@@ -1,10 +1,18 @@
-# Sistema RAG com Python, LangChain e FastAPI
+# Sistema RAG com Python, LangChain, OpenAI, Faiss, NLTK e FastAPI
 
-Este projeto implementa um sistema de Recuperação Aumentada por Geração (RAG) utilizando Python, LangChain, OpenAI e FastAPI.
+Este projeto implementa um sistema de Recuperação Aumentada por Geração (RAG) utilizando o seguinte conjunto de tecnologias:
+
+- **Python** como linguagem base
+- **LangChain** para orquestração de componentes de IA
+- **OpenAI** para geração de embeddings e processamento de linguagem natural
+- **Faiss** (Facebook AI Similarity Search) para armazenamento e busca de vetores
+- **NLTK** (Natural Language Toolkit) para pré-processamento de texto
+- **FastAPI** para interface de API de alta performance
+- Bibliotecas especializadas para processamento de documentos: **PyPDF2**, **python-docx**, **openpyxl**, **BeautifulSoup4**
 
 ## Visão Geral
 
-O sistema é capaz de processar documentos em vários formatos (TXT, PDF, DOCX, XLSX, HTML, CSV e outros formatos de texto), convertê-los em representações vetoriais, armazená-los eficientemente e fornecer respostas contextualizadas através de uma API REST.
+O sistema RAG desenvolvido é capaz de processar documentos em diversos formatos (incluindo TXT, PDF, DOCX, XLSX, HTML, CSV e outros formatos de texto), convertê-los em representações vetoriais utilizando modelos de embedding, pré-processá-los em linguagem natural, persistir o conhecimento aprendido e fornecer respostas contextualizadas através de uma API REST.
 
 ![Diagrama do Sistema RAG](./images/simplified_technical_drawing.svg)
 
