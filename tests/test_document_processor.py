@@ -1,27 +1,42 @@
 import pytest
-from src.document_processor import DocumentProcessor
+from src.document_processor import DocumentProcessor, DocumentProcessingError
 
-def test_document_segmentation():
+def test_process_single_document():
+    # Testa o processamento de um único documento
     processor = DocumentProcessor(chunk_size=100, chunk_overlap=20)
-    document = "Este é um documento de teste. " * 10  # 290 caracteres
-    segments = processor.process(document)
+    content = "This is a test document. " * 10
+    filename = "test_document.txt"
     
-    assert len(segments) > 1, "O documento deveria ser dividido em múltiplos segmentos"
-    assert all(len(seg) <= 100 for seg in segments), "Todos os segmentos devem ter no máximo 100 caracteres"
+    # Simula um arquivo convertendo o conteúdo para bytes
+    content_bytes = content.encode('utf-8')
     
-    # Verifica a sobreposição
-    for i in range(len(segments) - 1):
-        overlap = set(segments[i].split()) & set(segments[i+1].split())
-        assert len(overlap) > 0, "Deve haver alguma sobreposição entre segmentos adjacentes"
+    result = processor.process_file(content_bytes, filename)
+    
+    # Verifica se o documento foi dividido em múltiplos segmentos
+    assert len(result) > 1, "O documento deveria ser dividido em múltiplos segmentos"
+    # Verifica se cada segmento tem o conteúdo e metadados esperados
+    assert all("content" in segment for segment in result)
+    assert all("metadata" in segment for segment in result)
+    assert all(segment["metadata"]["source"] == filename for segment in result)
 
-def test_empty_document():
+def test_process_multiple_documents():
+    # Testa o processamento de múltiplos documentos
     processor = DocumentProcessor()
-    segments = processor.process("")
-    assert len(segments) == 0, "Um documento vazio deve resultar em uma lista vazia de segmentos"
+    documents = [
+        {"content": "Document 1".encode('utf-8'), "filename": "doc1.txt"},
+        {"content": "Document 2".encode('utf-8'), "filename": "doc2.txt"},
+        {"content": "".encode('utf-8'), "filename": "empty.txt"}
+    ]
+    result = processor.process_multiple_documents(documents)
+    
+    # Verifica se documentos vazios são ignorados
+    assert len(result) == 2
+    # Verifica se os metadados estão corretos para cada documento
+    assert result[0]["metadata"]["source"] == "doc1.txt"
+    assert result[1]["metadata"]["source"] == "doc2.txt"
 
-def test_short_document():
-    processor = DocumentProcessor(chunk_size=1000)
-    short_doc = "Este é um documento curto."
-    segments = processor.process(short_doc)
-    assert len(segments) == 1, "Um documento curto não deve ser segmentado"
-    assert segments[0] == short_doc, "O segmento único deve ser igual ao documento original"
+def test_error_handling():
+    # Testa o tratamento de erros para entradas inválidas
+    processor = DocumentProcessor()
+    with pytest.raises(DocumentProcessingError):
+        processor.process_file(b"Invalid content", "invalid.xyz")

@@ -1,37 +1,62 @@
 import pytest
-import numpy as np
 from src.vector_db import VectorDB
+import os
+import shutil
+
+@pytest.fixture(autouse=True)
+def clean_vector_db():
+    """
+    Fixture que limpa o diretório de persistência do banco de dados vetorial antes e após cada teste.
+    Garante que o diretório esteja vazio para evitar interferência entre testes.
+    """
+    # Remove o diretório de persistência antes de cada teste
+    if os.path.exists("./vector_db"):
+        shutil.rmtree("./vector_db")
+    yield
+    # Limpa novamente após o teste
+    if os.path.exists("./vector_db"):
+        shutil.rmtree("./vector_db")
 
 @pytest.fixture
 def vector_db():
-    return VectorDB(dimension=3)  # Usando dimensão 3 para simplificar os testes
+    """
+    Fixture que cria uma instância do banco de dados vetorial VectorDB.
+    
+    Parâmetros:
+    Nenhum
+    
+    Retorno:
+    Uma instância do banco de dados vetorial VectorDB com o diretório de persistência definido como "./vector_db".
+    """
+    return VectorDB(persist_directory="./vector_db")
 
 def test_add_and_search(vector_db):
-    vector1 = [1.0, 0.0, 0.0]
-    vector2 = [0.0, 1.0, 0.0]
-    vector3 = [0.0, 0.0, 1.0]
+    # Testa a adição de documentos e a busca
+    documents = ["This is a test document", "Another test document"]
+    metadatas = [{"source": "test1"}, {"source": "test2"}]
+    vector_db.add(documents, metadatas)
     
-    vector_db.add(vector1, "documento1")
-    vector_db.add(vector2, "documento2")
-    vector_db.add(vector3, "documento3")
-    
-    results = vector_db.search([1.0, 0.1, 0.1], k=2)
-    assert results[0] == "documento1", "O primeiro resultado deve ser o documento mais próximo"
-    assert len(results) == 2, "Deve retornar 2 resultados quando k=2"
+    results = vector_db.search("test document")
+    # Verifica se a busca retorna resultados
+    assert len(results) > 0
+    # Verifica se o resultado contém o texto esperado
+    assert "test document" in results[0][0]
 
-def test_empty_db_search(vector_db):
-    results = vector_db.search([1.0, 0.0, 0.0], k=1)
+def test_empty_search(vector_db):
+    # Testa a busca em um banco de dados vazio
+    results = vector_db.search("nonexistent document")
     assert len(results) == 0, "Busca em DB vazio deve retornar lista vazia"
 
-def test_search_with_k_greater_than_db_size(vector_db):
-    vector_db.add([1.0, 0.0, 0.0], "documento1")
-    results = vector_db.search([1.0, 0.0, 0.0], k=5)
-    assert len(results) == 1, "Deve retornar todos os documentos disponíveis, mesmo que k seja maior"
+def test_error_handling(vector_db):
+    # Testa o tratamento de erros para entradas inválidas
+    with pytest.raises(ValueError):
+        vector_db.add(None, None)
 
-def test_add_invalid_vector(vector_db):
-    with pytest.raises(ValueError, match="Vector dimension mismatch"):
-        vector_db.add([1.0, 0.0], "documento_invalido")  # Vetor com dimensão errada
+    with pytest.raises(ValueError):
+        vector_db.add([], None)
 
-def test_search_invalid_vector(vector_db):
-    with pytest.raises(ValueError, match="Query vector dimension mismatch"):
-        vector_db.search([1.0, 0.0], k=1)  # Vetor de busca com dimensão errada
+    with pytest.raises(ValueError):
+        vector_db.add(["test"], [])
+
+    with pytest.raises(ValueError):
+        vector_db.add("not a list", "not a list")

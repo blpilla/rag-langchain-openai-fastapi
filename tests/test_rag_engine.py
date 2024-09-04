@@ -1,66 +1,97 @@
 import pytest
 from unittest.mock import MagicMock, patch
 from src.rag_engine import RAGEngine
-from src.vector_db import VectorDB
 
 @pytest.fixture
 def mock_vector_db():
-    mock = MagicMock(spec=VectorDB)
-    mock.index = MagicMock()  # Adiciona o atributo 'index'
-    mock.documents = []  # Adiciona o atributo 'documents'
+    """
+    Cria um mock de um banco de dados vetorial para testes.
+
+    Retorna:
+        mock: Um objeto mock que simula o comportamento de um banco de dados vetorial.
+    """
+    mock = MagicMock()
+    mock.get_vector_store.return_value = MagicMock()
     return mock
 
 @pytest.fixture
 def mock_openai():
+    """
+    Cria um mock do OpenAI para testes.
+    
+    Retorna:
+        mock: Um objeto mock que simula o comportamento do OpenAI.
+    """
     with patch('src.rag_engine.OpenAI') as mock:
         yield mock
 
 @pytest.fixture
 def mock_embeddings():
+    """
+    Cria um mock das embeddings do OpenAI para testes.
+    
+    Retorna:
+        mock: Um objeto mock que simula o comportamento das embeddings do OpenAI.
+    """
     with patch('src.rag_engine.OpenAIEmbeddings') as mock:
-        mock.return_value.embed_query = MagicMock()  # Adiciona o método 'embed_query'
-        yield mock
-
-@pytest.fixture
-def mock_faiss():
-    with patch('src.rag_engine.FAISS') as mock:
         yield mock
 
 @pytest.fixture
 def mock_retrieval_qa():
+    """
+    Cria um mock do RetrievalQA para testes.
+
+    Retorna:
+        mock: Um objeto mock que simula o comportamento do RetrievalQA.
+    """
     with patch('src.rag_engine.RetrievalQA') as mock:
         yield mock
 
-def test_rag_engine_initialization(mock_vector_db, mock_openai, mock_embeddings, mock_faiss, mock_retrieval_qa):
+def test_rag_engine_initialization(mock_vector_db, mock_openai, mock_embeddings, mock_retrieval_qa):
+    # Testa a inicialização correta do RAGEngine
     rag_engine = RAGEngine(mock_vector_db)
     
-    assert mock_openai.called, "OpenAI should be initialized"
-    assert mock_embeddings.called, "OpenAIEmbeddings should be initialized"
-    assert mock_faiss.called, "FAISS should be initialized"
-    assert mock_retrieval_qa.from_chain_type.called, "RetrievalQA should be initialized"
+    assert mock_openai.called, "OpenAI deveria ser inicializado"
+    assert mock_embeddings.called, "OpenAIEmbeddings deveria ser inicializado"
+    assert mock_retrieval_qa.from_chain_type.called, "RetrievalQA deveria ser inicializado"
+    assert mock_vector_db.get_vector_store.called, "VectorDB deveria ser consultado"
 
-def test_rag_engine_query(mock_vector_db, mock_openai, mock_embeddings, mock_faiss, mock_retrieval_qa):
+def test_rag_engine_query(mock_vector_db, mock_openai, mock_embeddings, mock_retrieval_qa):
+    # Testa a funcionalidade de consulta do RAGEngine
     mock_qa_chain = MagicMock()
-    mock_qa_chain.run.return_value = "Resposta simulada"
+    mock_qa_chain.invoke.return_value = {
+        "result": "Test answer",
+        "source_documents": [
+            MagicMock(metadata={"source": "doc1"}, page_content="content1"),
+            MagicMock(metadata={"source": "doc2"}, page_content="content2")
+        ]
+    }
     mock_retrieval_qa.from_chain_type.return_value = mock_qa_chain
 
     rag_engine = RAGEngine(mock_vector_db)
-    result = rag_engine.query("Pergunta de teste?")
+    result = rag_engine.query("Test question")
 
-    assert result == "Resposta simulada", "A query deve retornar a resposta do QA chain"
-    mock_qa_chain.run.assert_called_once_with("Pergunta de teste?")
+    # Verifica se a resposta tem a estrutura esperada
+    assert "answer" in result
+    assert "sources" in result
+    assert len(result["sources"]) == 2
+    assert result["sources"][0] == {
+        "title": "doc1",
+        "content": "content1",
+        "metadata": {"source": "doc1"}
+    }
+    assert result["sources"][1] == {
+        "title": "doc2",
+        "content": "content2",
+        "metadata": {"source": "doc2"}
+    }
 
-def test_rag_engine_error_handling(mock_vector_db, mock_openai, mock_embeddings, mock_faiss, mock_retrieval_qa):
-    mock_qa_chain = MagicMock()
-    mock_qa_chain.run.side_effect = Exception("Erro simulado")
-    mock_retrieval_qa.from_chain_type.return_value = mock_qa_chain
-
+def test_rag_engine_query_no_documents(mock_vector_db, mock_openai, mock_embeddings, mock_retrieval_qa):
+    # Testa o comportamento quando não há documentos disponíveis
+    mock_vector_db.get_vector_store.return_value = None
     rag_engine = RAGEngine(mock_vector_db)
-    
-    with pytest.raises(Exception, match="Erro simulado"):
-        rag_engine.query("Pergunta que gera erro")
+    result = rag_engine.query("Test question")
 
-@patch.dict('os.environ', {'OPENAI_API_KEY': ''}, clear=True)
-def test_rag_engine_missing_api_key(mock_vector_db):
-    with pytest.raises(ValueError, match="OPENAI_API_KEY não encontrada nas variáveis de ambiente"):
-        RAGEngine(mock_vector_db)
+    assert "answer" in result
+    assert "Desculpe, não há documentos para responder à sua pergunta." in result["answer"]
+    assert result["sources"] == []

@@ -1,10 +1,10 @@
-# langchain-openai-fastapi
+# Sistema RAG com Python, LangChain e FastAPI
 
-Um sistema de Recuperação Aumentada por Geração (RAG) utilizando Python, LangChain, OpenAI e FastAPI.
+Este projeto implementa um sistema de Recuperação Aumentada por Geração (RAG) utilizando Python, LangChain, OpenAI e FastAPI.
 
 ## Visão Geral
 
-Este projeto implementa um sistema RAG capaz de processar documentos, convertê-los em representações vetoriais, armazená-los eficientemente e fornecer respostas contextualizadas através de uma API REST.
+O sistema é capaz de processar documentos em vários formatos (TXT, PDF, DOCX, XLSX, HTML, CSV e outros formatos de texto), convertê-los em representações vetoriais, armazená-los eficientemente e fornecer respostas contextualizadas através de uma API REST.
 
 ## Requisitos
 
@@ -43,39 +43,54 @@ Este projeto implementa um sistema RAG capaz de processar documentos, convertê-
    uvicorn main:app --reload
    ```
 
-2. Use curl para interagir com a API:
+2. Acesse a documentação interativa da API:
+   Abra um navegador e vá para `http://localhost:8000/docs`
 
-   - Processar um documento:
-     ```bash
-     curl -X POST "http://localhost:8000/process_document" \
-          -H "Content-Type: application/json" \
-          -d '{"content": "O Python é uma linguagem de programação de alto nível, interpretada de script, imperativa, orientada a objetos, funcional, de tipagem dinâmica e forte. Foi lançada por Guido van Rossum em 1991."}'
-     ```
+3. Teste a API usando o Swagger UI:
+   
+   a. Upload de Documentos:
+      - Clique no endpoint POST `/upload_documents`
+      - Clique em "Try it out"
+      - Use o botão "Choose File" para selecionar um ou mais arquivos
+      - Clique em "Execute" para fazer o upload
 
-   - Fazer uma consulta:
-     ```bash
-     curl -X POST "http://localhost:8000/query" \
-          -H "Content-Type: application/json" \
-          -d '{"question": "Quem criou a linguagem Python?"}'
-     ```
+   b. Fazer uma Consulta:
+      - Clique no endpoint POST `/query`
+      - Clique em "Try it out"
+      - Insira sua pergunta no campo "question" do corpo da requisição
+      - Clique em "Execute" para enviar a consulta
 
-3. Acesse a documentação da API em `http://localhost:8000/docs`
+4. Alternativamente, use curl para interagir com a API:
+
+   Upload de documentos:
+   ```
+   curl -X POST "http://localhost:8000/upload_documents" \
+        -H "Content-Type: multipart/form-data" \
+        -F "files=@/caminho/para/seu/arquivo.pdf" \
+        -F "files=@/caminho/para/seu/arquivo.csv"
+   ```
+
+   Fazer uma consulta:
+   ```
+   curl -X POST "http://localhost:8000/query" \
+        -H "Content-Type: application/json" \
+        -d '{"question": "Qual é o tema principal dos documentos?"}'
+   ```
 
 ## Estrutura do Projeto
 
 ```
-langchain-openai-fastapi/
-│
+.
 ├── src/
 │   ├── document_processor.py
+│   ├── text_preprocessor.py
 │   ├── vector_db.py
-│   └── rag_engine.py
-│
+|   └── rag_engine.py
 ├── tests/
 │   ├── test_document_processor.py
+│   ├── test_text_preprocessor.py
 │   ├── test_vector_db.py
 │   └── test_rag_engine.py
-│
 ├── .env
 ├── .gitignore
 ├── main.py
@@ -83,20 +98,16 @@ langchain-openai-fastapi/
 └── README.md
 ```
 
-## Componentes Principais
-
-- `document_processor.py`: Responsável por processar e segmentar documentos.
-- `vector_db.py`: Implementa o armazenamento e busca de vetores usando FAISS.
-- `rag_engine.py`: Coordena a recuperação de informações e geração de respostas usando LLM.
-- `main.py`: Implementa a API FastAPI para interagir com o sistema RAG.
-
 ## Características Principais
 
-- Processamento e segmentação de documentos
+- Processamento de múltiplos formatos de documento (TXT, PDF, DOCX, XLSX, HTML, CSV e outros formatos de texto)
+- Pré-processamento de texto para melhorar a qualidade dos vetores e otimizar o desempenho
 - Conversão de texto para vetores usando OpenAI Embeddings
 - Armazenamento eficiente de vetores usando FAISS
 - Motor RAG para recuperação de informações e geração de respostas
 - API REST com FastAPI para interação com o sistema
+- Documentação interativa com Swagger UI
+- Persistência do banco de dados vetorial para manter o conhecimento
 
 ## Contribuindo
 

@@ -9,3 +9,11 @@ uvicorn
 pydantic
 pytest
 httpx
+python-multipart
+pypdf
+python-docx
+openpyxl
+beautifulsoup4
+pandas
+chardet
+nltk
