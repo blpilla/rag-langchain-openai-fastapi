@@ -79,6 +79,25 @@ O sistema é capaz de processar documentos em vários formatos (TXT, PDF, DOCX, 
         -d '{"question": "Qual é o tema principal dos documentos?"}'
    ```
 
+## Executando Testes Unitários
+
+Para executar os testes do projeto, siga estas etapas:
+
+1. Certifique-se de que está no diretório raiz do projeto.
+
+2. Configure o PYTHONPATH para incluir o diretório atual:
+   ```
+   export PYTHONPATH=./
+   ```
+
+3. Execute os testes usando pytest:
+   ```
+   pytest tests/ -vv
+   ```
+
+   Este comando executará todos os testes no diretório `tests/` com saída detalhada (-vv).
+
+
 ## Estrutura do Projeto
 
 ```

@@ -166,11 +166,6 @@ class VectorDB:
             logger.info(f"Salvando VectorDB da memória para o disco em {self.persist_directory}")
             self.vector_store.save_local(self.persist_directory)
             
-            # Salva o índice para docstore_id separadamente em disco
-            index_to_docstore_id = self.vector_store.index_to_docstore_id
-            with open(os.path.join(self.persist_directory, "index_to_docstore_id.pkl"), "wb") as f:
-                pickle.dump(index_to_docstore_id, f)
-            
             logger.info("VectorDB salvo com sucesso em disco")
 
     def load(self):
@@ -195,12 +190,6 @@ class VectorDB:
                     self.embeddings,
                     allow_dangerous_deserialization=True
                 )
-                
-                # Carrega o índice para docstore_id do disco para a memória
-                index_to_docstore_id_path = os.path.join(self.persist_directory, "index_to_docstore_id.pkl")
-                if os.path.exists(index_to_docstore_id_path):
-                    with open(index_to_docstore_id_path, "rb") as f:
-                        self.vector_store.index_to_docstore_id = pickle.load(f)
                 
                 logger.info(f"VectorDB carregado com sucesso do disco para a memória com {self.vector_store.index.ntotal} documentos")
             except Exception as e:
