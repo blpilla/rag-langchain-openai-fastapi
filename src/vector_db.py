@@ -37,21 +37,23 @@ class VectorDB:
         
         # Inicializa o modelo de embeddings da OpenAI
         self.embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+        # Inicializa o armazenamento de vetores em memória
         self.vector_store = None
+        # Define o diretório para persistência em disco
         self.persist_directory = persist_directory
 
         # Inicializa o pre-processador com o idioma em português
         self.preprocessor = TextPreprocessor(language='portuguese')
         
-        # Tenta carregar um banco de dados existente
+        # Tenta carregar um banco de dados existente do disco para a memória
         self.load()
 
     def add(self, texts, metadatas):
         """
         Adiciona uma lista de textos e metadados ao banco de dados vetorial.
 
-        Este método pré-processa os textos, cria ou atualiza o armazenamento de vetores,
-        e persiste os dados.
+        Este método pré-processa os textos, cria ou atualiza o armazenamento de vetores em memória,
+        e então persiste os dados em disco.
 
         Parâmetros:
             texts (list): Lista de textos a serem adicionados.
@@ -68,31 +70,34 @@ class VectorDB:
         if texts is None or metadatas is None:
             raise ValueError("Textos e metadados não podem ser None")
         
+        # Valida se os textos e metadados são listas
         if not isinstance(texts, list) or not isinstance(metadatas, list):
             raise ValueError("Textos e metadados devem ser listas")
         
+        # Valida se o número de textos e metadados é o mesmo
         if len(texts) != len(metadatas):
             raise ValueError("O número de textos deve ser igual ao número de metadados")
 
+        # Adiciona os textos ao banco de dados vetorial
         try:
-            logger.info(f"Adicionando {len(texts)} textos ao VectorDB")
+            logger.info(f"Adicionando {len(texts)} textos ao VectorDB em memória")
             logger.info(f"Metadados: {metadatas}")
             
             # Pré-processa os textos
             preprocessed_texts = [self.preprocessor.preprocess(text) for text in texts]
             
             if self.vector_store is None:
-                # Cria um novo FAISS VectorStore se ainda não existir
-                logger.info("Inicializando novo FAISS VectorStore")
+                # Cria um novo FAISS VectorStore em memória se ainda não existir
+                logger.info("Inicializando novo FAISS VectorStore em memória")
                 self.vector_store = FAISS.from_texts(preprocessed_texts, self.embeddings, metadatas=metadatas)
             else:
-                # Adiciona ao FAISS VectorStore existente
-                logger.info("Adicionando a FAISS VectorStore existente")
+                # Adiciona ao FAISS VectorStore existente em memória
+                logger.info("Adicionando a FAISS VectorStore existente em memória")
                 self.vector_store.add_texts(preprocessed_texts, metadatas=metadatas)
             
-            logger.info(f"Total de documentos após adição: {self.vector_store.index.ntotal}")
+            logger.info(f"Total de documentos após adição em memória: {self.vector_store.index.ntotal}")
             
-            # Persiste o banco de dados após a adição
+            # Persiste o banco de dados em disco após a adição em memória
             self.save()
         except Exception as e:
             logger.error(f"Erro ao adicionar ao VectorDB: {str(e)}")
@@ -100,7 +105,7 @@ class VectorDB:
 
     def search(self, query, k=5):
         """
-        Realiza uma busca por similaridade no banco de dados vetorial.
+        Realiza uma busca por similaridade no banco de dados vetorial em memória.
 
         Este método pré-processa a query e utiliza o FAISS para encontrar documentos similares.
 
@@ -118,7 +123,7 @@ class VectorDB:
         Exceções:
             None
         """
-        # Verifica se o FAISS VectorStore foi inicializado corretamente
+        # Verifica se o FAISS VectorStore foi inicializado corretamente em memória
         if self.vector_store is None or self.vector_store.index.ntotal == 0:
             return []
         
@@ -131,7 +136,7 @@ class VectorDB:
 
     def get_vector_store(self):
         """
-        Retorna o armazenamento de vetores atual.
+        Retorna o armazenamento de vetores atual em memória.
 
         Este método é utilizado para acessar o FAISS VectorStore diretamente.
 
@@ -139,7 +144,7 @@ class VectorDB:
             None
 
         Retorna:
-            FAISS: O armazenamento de vetores atual.
+            FAISS: O armazenamento de vetores atual em memória.
         """
         return self.vector_store
 
@@ -156,24 +161,24 @@ class VectorDB:
         Retorna:
             None
         """
-        # Salva o FAISS VectorStore em disco
+        # Salva o FAISS VectorStore da memória para o disco
         if self.vector_store:
-            logger.info(f"Salvando VectorDB em {self.persist_directory}")
+            logger.info(f"Salvando VectorDB da memória para o disco em {self.persist_directory}")
             self.vector_store.save_local(self.persist_directory)
             
-            # Salva o índice para docstore_id separadamente
+            # Salva o índice para docstore_id separadamente em disco
             index_to_docstore_id = self.vector_store.index_to_docstore_id
             with open(os.path.join(self.persist_directory, "index_to_docstore_id.pkl"), "wb") as f:
                 pickle.dump(index_to_docstore_id, f)
             
-            logger.info("VectorDB salvo com sucesso")
+            logger.info("VectorDB salvo com sucesso em disco")
 
     def load(self):
         """
-        Carrega o banco de dados vetorial do disco, se existir.
+        Carrega o banco de dados vetorial do disco para a memória, se existir.
 
-        Este método tenta carregar um FAISS VectorStore previamente salvo.
-        Se o carregamento falhar, inicializa um novo VectorStore vazio.
+        Este método tenta carregar um FAISS VectorStore previamente salvo do disco para a memória.
+        Se o carregamento falhar, inicializa um novo VectorStore vazio em memória.
 
         Parâmetros:
             None
@@ -182,24 +187,25 @@ class VectorDB:
             None
         """
         if os.path.exists(self.persist_directory):
-            logger.info(f"Carregando VectorDB de {self.persist_directory}")
+            logger.info(f"Carregando VectorDB do disco para a memória: {self.persist_directory}")
             try:
+                # Carrega o FAISS VectorStore do disco para a memória
                 self.vector_store = FAISS.load_local(
                     self.persist_directory, 
                     self.embeddings,
                     allow_dangerous_deserialization=True
                 )
                 
-                # Carrega o índice para docstore_id
+                # Carrega o índice para docstore_id do disco para a memória
                 index_to_docstore_id_path = os.path.join(self.persist_directory, "index_to_docstore_id.pkl")
                 if os.path.exists(index_to_docstore_id_path):
                     with open(index_to_docstore_id_path, "rb") as f:
                         self.vector_store.index_to_docstore_id = pickle.load(f)
                 
-                logger.info(f"VectorDB carregado com {self.vector_store.index.ntotal} documentos")
+                logger.info(f"VectorDB carregado com sucesso do disco para a memória com {self.vector_store.index.ntotal} documentos")
             except Exception as e:
-                logger.error(f"Erro ao carregar VectorDB: {str(e)}")
-                logger.info("Inicializando um novo VectorDB")
+                logger.error(f"Erro ao carregar VectorDB do disco: {str(e)}")
+                logger.info("Inicializando um novo VectorDB vazio em memória")
                 self.vector_store = None
         else:
-            logger.info("Nenhum VectorDB existente encontrado")
+            logger.info("Nenhum VectorDB existente encontrado no disco. Iniciando com um VectorDB vazio em memória")

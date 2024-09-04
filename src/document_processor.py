@@ -64,6 +64,7 @@ class DocumentProcessor:
 
             # Divide o texto em segmentos menores
             segments = self.text_splitter.split_text(text)
+            # Retorna o conteúdo de cada segmento e metadados sobre o arquivo original
             return [{"content": seg, "metadata": {"source": filename}} for seg in segments]
         except Exception as e:
             logger.error(f"Erro ao processar arquivo {filename}: {str(e)}")
