@@ -35,5 +35,6 @@ Optei por usar "stuff" como o tipo de chain padrão no RAGEngine porque:
 - Proporciona respostas mais coerentes quando o número de documentos relevantes é limitado.
 - Mantém o contexto completo em uma única passagem pelo modelo, ideal para consultas que requerem compreensão holística.
 - É mais eficiente em termos de chamadas à API, reduzindo custos para conjuntos de dados menores.
+Obs: Para una base de dados em larga escala, a escolha seria do tipo "refine" ou "map reduce".
 
 Estas decisões foram tomadas pensando em criar um sistema RAG capaz de processar e recuperar informações de forma precisa e escalável.
