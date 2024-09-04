@@ -3,7 +3,7 @@ langchain
 langchain-community
 langchain-openai
 openai
-faiss-cpu
+faiss-cpu # Ou "faiss-gpu", caso possua uma GPU compatível.
 python-dotenv
 uvicorn
 pydantic
