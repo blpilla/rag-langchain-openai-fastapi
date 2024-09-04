@@ -6,6 +6,8 @@ Este projeto implementa um sistema de Recuperação Aumentada por Geração (RAG
 
 O sistema é capaz de processar documentos em vários formatos (TXT, PDF, DOCX, XLSX, HTML, CSV e outros formatos de texto), convertê-los em representações vetoriais, armazená-los eficientemente e fornecer respostas contextualizadas através de uma API REST.
 
+![Diagrama do Sistema RAG](./images/simplified_technical_drawing.svg)
+
 ## Requisitos
 
 - Python 3.12.5+
@@ -33,14 +35,6 @@ Este projeto implementa um sistema de Recuperação Aumentada por Geração (RAG
 ## Visão Geral
 
 O sistema é capaz de processar documentos em vários formatos (TXT, PDF, DOCX, XLSX, HTML, CSV e outros formatos de texto), convertê-los em representações vetoriais, armazená-los eficientemente e fornecer respostas contextualizadas através de uma API REST.
-
-## Diagrama do Sistema
-
-Abaixo está uma representação visual simplificada deste sistema RAG:
-
-![Diagrama do Sistema RAG](./images/simplified_technical_drawing.svg)
-
-Este diagrama ilustra como o sistema processa documentos, armazena informações e responde a consultas dos usuários.
 
 ## Requisitos
 
