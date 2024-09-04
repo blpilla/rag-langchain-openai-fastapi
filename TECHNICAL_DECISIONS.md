@@ -28,4 +28,12 @@ Implementei a persistência do banco de dados vetorial porque:
 - Permite que o sistema mantenha seu conhecimento entre as sessões.
 - Facilita o backup e a migração dos dados, se necessário.
 
+## 4. Escolhi "stuff" como Chain Type Padrão
+
+Optei por usar "stuff" como o tipo de chain padrão no RAGEngine porque:
+
+- Proporciona respostas mais coerentes quando o número de documentos relevantes é limitado.
+- Mantém o contexto completo em uma única passagem pelo modelo, ideal para consultas que requerem compreensão holística.
+- É mais eficiente em termos de chamadas à API, reduzindo custos para conjuntos de dados menores.
+
 Estas decisões foram tomadas pensando em criar um sistema RAG capaz de processar e recuperar informações de forma precisa e escalável.

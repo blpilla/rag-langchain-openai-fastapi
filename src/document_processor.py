@@ -22,8 +22,8 @@ class DocumentProcessor:
         Inicializa o RecursiveCharacterTextSplitter com o tamanho de chunk e sobreposição de chunk fornecidos.
 
         Parâmetros:
-            chunk_size (int): O tamanho máximo de cada chunk. Padrão é 1000.
-            chunk_overlap (int): O número de caracteres para sobrepor entre chunks. Padrão é 200.
+            chunk_size (int): O tamanho máximo de cada bloco. Padrão é 1000.
+            chunk_overlap (int): O número de caracteres para sobrepor entre blocos. Padrão é 200.
 
         Retorna:
             None

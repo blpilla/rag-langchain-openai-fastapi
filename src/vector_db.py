@@ -132,6 +132,7 @@ class VectorDB:
         
         # Realiza a busca por similaridade no FAISS com a pergunta pre-processada
         results = self.vector_store.similarity_search_with_score(preprocessed_query, k=k)
+        # Retorna uma lista de tuplas com o conteúdo da página, os metadados e a pontuação
         return [(doc.page_content, doc.metadata, score) for doc, score in results]
 
     def get_vector_store(self):

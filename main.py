@@ -44,6 +44,7 @@ async def upload_documents(files: List[UploadFile] = File(...)):
             # Processa cada arquivo e extrai seu conteúdo
             processed_segments = document_processor.process_file(content, file.filename)
             logger.info(f"Segmentos processados: {len(processed_segments)}")
+            # Adiciona os segmentos processados ao dicionário de documentos
             processed_documents.extend(processed_segments)
         
         logger.info(f"Total de segmentos processados: {len(processed_documents)}")
@@ -55,8 +56,9 @@ async def upload_documents(files: List[UploadFile] = File(...)):
         global rag_engine
         rag_engine = RAGEngine(vector_db)
         logger.info("RAGEngine reinicializado com novos documentos")
-        
+        # Retorna uma mensagem de sucesso
         return {"message": f"{len(files)} documentos carregados, processados e armazenados com sucesso"}
+    # Trata erros de processamento de documentos
     except DocumentProcessingError as e:
         logger.error(f"Erro ao processar documentos: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))
@@ -86,6 +88,7 @@ async def query(query: Query):
         # Processa a consulta usando o motor RAG
         response = rag_engine.query(query.question)
         logger.info(f"Resposta gerada: {response}")
+        # Retorna a resposta processada
         return {
             "question": query.question,
             "answer": response["answer"],
