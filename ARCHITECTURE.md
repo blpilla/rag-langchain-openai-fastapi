@@ -1,6 +1,6 @@
 # Arquitetura do Sistema RAG (Retrieval-Augmented Generation)
 
-Este documento descreve a arquitetura de alto nível do sistema de Geração Aumentada de Recuperação (RAG) implementado com Python, LangChain, OpenAI e FastAPI.
+Este documento descreve a arquitetura de alto nível do sistema de Geração Aumentada de Recuperação (RAG) implementado com Python, LangChain, OpenAI, Faiss, NLTK e FastAPI.
 
 ## Visão Geral do Sistema
 
