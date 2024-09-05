@@ -1,6 +1,6 @@
 # Sistema RAG com Python, LangChain, OpenAI, Faiss, NLTK e FastAPI
 
-Este projeto implementa um sistema de Recuperação Aumentada por Geração (RAG) utilizando o seguinte conjunto de tecnologias:
+Este projeto implementa um sistema de Geração Aumentada de Recuperação (RAG) utilizando o seguinte conjunto de tecnologias:
 
 - **Python** como linguagem base
 - **LangChain** para orquestração de componentes de IA
