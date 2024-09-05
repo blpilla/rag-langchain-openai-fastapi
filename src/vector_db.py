@@ -3,7 +3,6 @@ from langchain_openai import OpenAIEmbeddings
 import os
 from dotenv import load_dotenv
 import logging
-import pickle
 from src.text_preprocessor import TextPreprocessor
 
 # Configuração do logging para monitoramento e debugging
@@ -162,9 +161,9 @@ class VectorDB:
         Retorna:
             None
         """
-        # Salva o FAISS VectorStore da memória para o disco
         if self.vector_store:
             logger.info(f"Salvando VectorDB da memória para o disco em {self.persist_directory}")
+            # Salva o FAISS VectorStore em disco
             self.vector_store.save_local(self.persist_directory)
             
             logger.info("VectorDB salvo com sucesso em disco")

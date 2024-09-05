@@ -51,7 +51,7 @@ class RAGEngine:
             self.qa_chain = RetrievalQA.from_chain_type(
                 llm=self.llm, # Usa o modelo de linguagem OpenAI
                 chain_type="stuff",  # Usa o método "stuff" para combinar documentos
-                retriever=self.vector_store.as_retriever(),
+                retriever=self.vector_store.as_retriever(), # Usa o armazenamento de vetores
                 return_source_documents=True,  # Retorna os documentos fonte usados
                 verbose=True  # Ativa logs detalhados para debugging
             )
